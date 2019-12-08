@@ -108,6 +108,7 @@ void Game::onIncreaseScore()
 {
   m_pPoints->increaseScore();
   CheckPoints();
+
 }
 
 void Game::onDecreaseScore()
