@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>Resources/images/Interceptor.png</file>
+        <file>Resources/images/Corporal.png</file>
+        <file>Resources/images/Destoyer.png</file>
+        <file>Resources/images/Exterminator.png</file>
+        <file>Resources/images/Fighter.png</file>
+        <file>Resources/images/RedPlayer.png</file>
+        <file>Resources/images/SpaceInvadersBg.jpg</file>
+        <file>Resources/images/Weapons.png</file>
+    </qresource>
+</RCC>
