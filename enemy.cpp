@@ -31,7 +31,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(150, 70), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 40;
+        enemySpeed_ = 20;
         enemyHealth_ = 100;
         points_ = 10;
         break;
@@ -39,10 +39,10 @@ void Enemy::setType(EnemyType enemyType)
     case EnemyType::Interceptor:
     {
         QPixmap oPixmap(":/images/Resources/images/Interceptor.png");
-        setPixmap(oPixmap.scaled(QSize(70, 50), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(CORPORAL_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 20;
+        enemySpeed_ = 10;
         enemyHealth_ = 25;
         points_ = 15;
         break;
@@ -50,10 +50,10 @@ void Enemy::setType(EnemyType enemyType)
     case EnemyType::Fighter:
     {
         QPixmap oPixmap(":/images/Resources/images/Fighter.png");
-        setPixmap(oPixmap.scaled(QSize(190, 85), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(FIGHTER_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 50;
+        enemySpeed_ = 25;
         enemyHealth_ = 200;
         points_ = 25;
         break;
@@ -61,10 +61,10 @@ void Enemy::setType(EnemyType enemyType)
     case EnemyType::Destroyer:
     {
         QPixmap oPixmap(":/images/Resources/images/Destoyer.png");
-        setPixmap(oPixmap.scaled(QSize(220, 100), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(DESTROYER_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 60;
+        enemySpeed_ = 30;
         enemyHealth_ = 500;
         points_ = 50;
         break;
@@ -72,10 +72,10 @@ void Enemy::setType(EnemyType enemyType)
     case EnemyType::Exterminator:
     {
         QPixmap oPixmap(":/images/Resources/images/Exterminator.png");
-        setPixmap(oPixmap.scaled(QSize(340, 190), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(EXTERMINATOR_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 80;
+        enemySpeed_ = 40;
         enemyHealth_ = 1000;
         points_ = 100;
         break;
@@ -96,7 +96,7 @@ void Enemy::decreaseHealth(int damage)
 
 void Enemy::onMove()
 {
-  setPos(x(), y() + 5);
+  setPos(x(), y() + 2);
   if (pos().y() >= (scene()->height() - gPlayerSize.height()))
   {
     scene()->removeItem(this);
