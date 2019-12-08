@@ -31,7 +31,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(150, 70), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 8;
+        enemySpeed_ = 40;
         enemyHealth_ = 100;
         points_ = 10;
         break;
@@ -42,7 +42,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(70, 50), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 27;
+        enemySpeed_ = 20;
         enemyHealth_ = 25;
         points_ = 15;
         break;
@@ -53,7 +53,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(190, 85), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 20;
+        enemySpeed_ = 50;
         enemyHealth_ = 200;
         points_ = 25;
         break;
@@ -64,7 +64,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(220, 100), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 10;
+        enemySpeed_ = 60;
         enemyHealth_ = 500;
         points_ = 50;
         break;
@@ -75,7 +75,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(340, 190), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        enemySpeed_ = 25;
+        enemySpeed_ = 80;
         enemyHealth_ = 1000;
         points_ = 100;
         break;
@@ -89,7 +89,7 @@ void Enemy::decreaseHealth(int damage)
   if (enemyHealth_ <= 0)
   {
     scene()->removeItem(this);
-    emit sigIncreaseScore();
+    emit sigIncreaseScore(points_);
     delete this;
   }
 }

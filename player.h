@@ -26,7 +26,7 @@ public:
   void shoot();
 
 signals:
-  void sigIncreaseScore();
+  void sigIncreaseScore(int);
   void sigDecreaseScore();
 
 private:

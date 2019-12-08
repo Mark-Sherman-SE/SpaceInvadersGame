@@ -14,7 +14,7 @@ class Points : public QGraphicsTextItem
 public:
   Points(QGraphicsItem *pParent = nullptr);
 
-  void increaseScore();
+  void increaseScore(int points);
   void decreaseScore();
   void decreaseHealth();
 

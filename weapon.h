@@ -23,7 +23,7 @@ public:
   void setWeaponType(WeaponType weaponType);
 
 signals:
-  void sigIncreaseScore();
+  void sigIncreaseScore(int);
   void sigDecreaseScore();
 
 public slots:

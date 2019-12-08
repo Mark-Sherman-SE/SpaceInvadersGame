@@ -104,11 +104,10 @@ void Game::onCreateEnemy()
   connect(pEnemy, &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
 }
 
-void Game::onIncreaseScore()
+void Game::onIncreaseScore(int points)
 {
-  m_pPoints->increaseScore();
+  m_pPoints->increaseScore(points);
   CheckPoints();
-
 }
 
 void Game::onDecreaseScore()

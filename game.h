@@ -24,7 +24,7 @@ protected:
 
 public slots:
   void onCreateEnemy();
-  void onIncreaseScore();
+  void onIncreaseScore(int points);
   void onDecreaseScore();
   void onDecreaseHealth();
   void onGameOver();

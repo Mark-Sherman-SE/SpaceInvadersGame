@@ -23,7 +23,7 @@ public:
   void decreaseHealth(int damage);
 
 signals:
-  void sigIncreaseScore();
+  void sigIncreaseScore(int);
   void sigDecreaseHealth();
   void sigGameOver();
 

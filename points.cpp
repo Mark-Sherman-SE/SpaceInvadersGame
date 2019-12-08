@@ -10,9 +10,9 @@ Points::Points(QGraphicsItem *pParent) : QGraphicsTextItem(pParent)
   setFont(QFont("times", 24));
 }
 
-void Points::increaseScore()
+void Points::increaseScore(int points)
 {
-  m_nScore += 50;
+  m_nScore += points;
   setPlainText(QString("Health : ") + QString::number(m_nHealth) + "\n"
                + QString("Score : ") + QString::number(m_nScore));
 }
