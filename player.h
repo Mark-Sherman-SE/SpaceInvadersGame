@@ -7,8 +7,10 @@
 #include <QSize>
 #include <ctime>
 #include "weapon.h"
-//#include <QKeyEvent>
+#include <QKeyEvent>
 //#include "EColor.h"
+#include <QTimer>
+#include "windows.h"
 
 /*enum class EColor
 {
@@ -26,8 +28,13 @@ public:
   void shoot();
 
 signals:
+ // void sigMove();
   void sigIncreaseScore(int);
   void sigDecreaseScore();
+
+  ////////////////////////////
+/*public slots:
+  void keyPress(QKeyEvent *event);*/
 
 private:
   WeaponType weaponType_;

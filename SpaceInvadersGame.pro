@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    boss.cpp \
     enemy.cpp \
     game.cpp \
     main.cpp \
@@ -24,8 +25,10 @@ SOURCES += \
     weapon.cpp
 
 HEADERS += \
+    boss.h \
     enemy.h \
     game.h \
+    opponent.h \
     player.h \
     points.h \
     weapon.h

@@ -1,12 +1,12 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-
 #include <QGraphicsPixmapItem>
 //#include <QGraphicsSimpleTextItem>
 #include <QGraphicsItem>
 #include <QSize>
 //#include <QKeyEvent>
+#include <QTimer>
 
 enum class EnemyType
 {
@@ -24,6 +24,13 @@ class Enemy :  public QObject, public QGraphicsPixmapItem
   Q_OBJECT
 public:
   Enemy(EnemyType enemyType, QGraphicsItem *pParent = nullptr);
+
+  //Enemy(const Enemy &);
+
+  //~Enemy();
+
+  //Enemy &operator =(const Enemy &);
+
   EnemyType getType() const;
   void setType(EnemyType eColor);
   void decreaseHealth(int damage);
@@ -38,6 +45,7 @@ public slots:
 
 private:
   EnemyType enemyType_;
+  QTimer *pTimer;
   int enemySpeed_;
   int enemyHealth_;
   int points_;

@@ -5,11 +5,16 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <vector>
+#include <QList>
+#include <iterator>
+
+#include <memory>
 
 #include "player.h"
 #include "weapon.h"
 #include "enemy.h"
 #include "points.h"
+#include "boss.h"
 
 const int VARIABLE_AMOUNT_OF_ENEMIES = 20;
 
@@ -34,10 +39,12 @@ public slots:
 private:
   Player *m_pPlayer = nullptr;
   Points *m_pPoints = nullptr;
-  //QTimer *pTimer = nullptr;
+  QTimer *pTimer = nullptr;
   QSize m_oScreenSize;
- // std::vector<Enemy *> enemies_;
- // std::vector<Enemy *>::iterator currentEnemy_;
+  std::vector<Enemy *> enemies_;
+  std::vector<Enemy *>::iterator ourEnemy_;
+  //QList<Enemy *>::iterator currentEnemy_;
+  std::size_t currentEnemy_;
 };
 
 #endif // GAME_H

@@ -1,18 +1,53 @@
 #include "enemy.h"
 #include "player.h"
 
-#include <QTimer>
+//#include <QTimer>
 #include <QGraphicsScene>
 
 Enemy::Enemy(EnemyType enemyType, QGraphicsItem *pParent) :
+  QObject(),
   QGraphicsPixmapItem(pParent)
 {
   setType(enemyType);
 
-  QTimer *pTimer = new QTimer(this);
+  pTimer = new QTimer(this);
   connect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
   pTimer->start(enemySpeed_);
 }
+
+/*Enemy::Enemy(const Enemy &copiedEnemy) :
+  QObject(),
+  QGraphicsPixmapItem(nullptr)
+{
+  Enemy(copiedEnemy.enemyType_);
+}*/
+
+/*Enemy::~Enemy()
+{
+  if (scene()->isActive())
+  {
+    disconnect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
+    delete pTimer;
+    enemySpeed_ = 0;
+    enemyHealth_ = 0;
+    points_ = 0;
+  }
+}*/
+
+/*Enemy &Enemy::operator =(const Enemy &copiedEnemy)
+{
+  if (this != &copiedEnemy)
+  {
+    setType(copiedEnemy.enemyType_);
+    pTimer->stop();
+    disconnect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
+    delete pTimer;
+    pTimer = new QTimer(this);
+    connect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
+    pTimer->start(enemySpeed_);
+  }
+  return *this;
+}*/
 
 EnemyType Enemy::getType() const
 {
@@ -96,19 +131,28 @@ void Enemy::decreaseHealth(int damage)
 
 void Enemy::onMove()
 {
-  setPos(x(), y() + 2);
-  if (pos().y() >= (scene()->height() - gPlayerSize.height()))
+  if (scene() != nullptr)
   {
-    scene()->removeItem(this);
-    emit sigDecreaseHealth();
-    delete this;
-  }
-  QList<QGraphicsItem *> lstCollidingItem = collidingItems();
-  for (auto const pItem : lstCollidingItem)
-  {
-    if (dynamic_cast<Player *>(pItem))
+    this->setPos(x(), y() + 2);
+    if (this->pos().y() >= (scene()->height() - gPlayerSize.height()))
     {
-      emit sigGameOver();
+      scene()->removeItem(this);
+      emit sigDecreaseHealth();
+      delete this;
+    }
+    else
+    {
+      QList<QGraphicsItem *> lstCollidingItem = collidingItems();
+      if (!lstCollidingItem.empty())
+      {
+        for (auto const pItem : lstCollidingItem)
+        {
+          if (dynamic_cast<Player *>(pItem))
+          {
+            emit sigGameOver();
+          }
+        }
+      }
     }
   }
 }

@@ -8,5 +8,8 @@
         <file>Resources/images/RedPlayer.png</file>
         <file>Resources/images/SpaceInvadersBg.jpg</file>
         <file>Resources/images/Weapons.png</file>
+        <file>Resources/images/Dominator.png</file>
+        <file>Resources/images/Frost.png</file>
+        <file>Resources/images/Soul.png</file>
     </qresource>
 </RCC>

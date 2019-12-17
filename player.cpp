@@ -1,11 +1,18 @@
 #include "player.h"
+#include <QKeyEvent>
 
 #include <QGraphicsScene>
 
-Player::Player(QGraphicsItem *pParent) : QGraphicsPixmapItem(pParent)
+Player::Player(QGraphicsItem *pParent) :
+  QObject(),
+  QGraphicsPixmapItem(pParent)
 {
   QPixmap oPixmap(":/images/Resources/images/RedPlayer.png");
   setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
+  /////////////////////
+  /*QTimer *pTimer = new QTimer(this);
+  connect(pTimer, &QTimer::timeout, this, &Player::keyPressEvent);
+  pTimer->start(2);*/
 }
 
 void Player::shoot()
@@ -27,6 +34,34 @@ void Player::shoot()
     time_ = clock();
   }
 }
+
+/*void Player::keyPressEvent(QKeyEvent *event)
+{
+  switch (event->key())
+  {
+    case Qt::Key_Left:
+    {
+      if (this->pos().x() > 0)
+      {
+        this->setPos(this->x() - 20, this->y());
+      }
+      break;
+    }
+    case Qt::Key_Right:
+    {
+      if (this->pos().x() + gPlayerSize.width() < 1920)
+      {
+        this->setPos(this->x() + 20, this->y());
+      }
+      break;
+    }
+    case Qt::Key_Space:
+    {
+      this->shoot();
+      break;
+    }
+  }
+}*/
 
 /*EColor Player::getColor() const
 {
