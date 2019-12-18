@@ -2,7 +2,8 @@
 
 #include <QDebug>
 
-//#include <QTimer>
+#include <QTime>
+#include <QCoreApplication>
 
 static int ENEMY_NUMBER = 0;
 
@@ -36,8 +37,8 @@ void Game::Run()
   connect(m_pPlayer, &Player::sigDecreaseScore, this, &Game::onDecreaseScore);
   /////////////////////////////////////////////////////////////////////////////////
 
-  std::size_t amountOfEnemies = 20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
-  Enemy *pEnemy = nullptr;
+  std::size_t amountOfEnemies = 10;//20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
+  Opponent *pEnemy = nullptr;
   int nType;
   int nPos;
   for (std::size_t i = 0; i < amountOfEnemies; ++i)
@@ -45,7 +46,8 @@ void Game::Run()
     nType = rand() % 5;
     pEnemy = new Enemy(static_cast<EnemyType>(nType));
     enemies_.push_back(pEnemy);
-    nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_.back()->x()));
+   // nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_.back()->getSize().width() * 2));
+    nPos = rand() % static_cast<int>(scene()->width() - enemies_.back()->getSize().width());
     enemies_.back()->setPos(nPos, 0);
 
     /*connect(enemies_.back(), &Enemy::sigGameOver, this, &Game::onGameOver);
@@ -124,32 +126,6 @@ void Game::keyPressEvent(QKeyEvent *event)
   {
     return;
   }
-  /*if (event->key() == Qt::Key_Left)
-  {
-    if (event->key() == Qt::Key_Space)
-    {
-      m_pPlayer->shoot();
-    }
-    if (m_pPlayer->pos().x() > 0)
-    {
-      m_pPlayer->setPos(m_pPlayer->x() - 20, m_pPlayer->y());
-    }
-  }
-  else if (event->key() == Qt::Key_Right)
-  {
-    if (event->key() == Qt::Key_Space)
-    {
-      m_pPlayer->shoot();
-    }
-    if (m_pPlayer->pos().x() + gPlayerSize.width() < m_oScreenSize.width())
-    {
-      m_pPlayer->setPos(m_pPlayer->x() + 20, m_pPlayer->y());
-    }
-  }
-  else if (event->key() == Qt::Key_Space)
-  {
-    m_pPlayer->shoot();
-  }*/
   switch (event->key())
   {
     case Qt::Key_Left:
@@ -211,21 +187,40 @@ void Game::onCreateEnemy()
   qDebug() << "start1";
   scene()->addItem(*ourEnemy_);
   qDebug() << "start2";
-  connect(*ourEnemy_, &Enemy::sigGameOver, this, &Game::onGameOver);
-  connect(*ourEnemy_, &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-  connect(*ourEnemy_, &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
+  connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigGameOver, this, &Game::onGameOver);
+  connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
+  connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
+  enemyType_ = (dynamic_cast<Enemy *>(*ourEnemy_))->getType();
   ++ourEnemy_;
-  if (*ourEnemy_ == nullptr)
+  qDebug() << "added";
+  if (ourEnemy_ == enemies_.end())//*ourEnemy_ == nullptr)
   {
+    qDebug() << "in";
+    enemies_.clear();
     pTimer->stop();
     disconnect(pTimer, &QTimer::timeout, this, &Game::onCreateEnemy);
-   /* Boss *boss = new Boss(BossType::Soul);
-    int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(boss->x()));
+
+    QTime dieTime= QTime::currentTime().addSecs(5 * static_cast<int>(enemyType_));
+
+    while (QTime::currentTime() < dieTime)
+    {
+      QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    }
+    //Sleep(6000);
+   /* pTimer = new QTimer(this);
+    pTimer->setSingleShot(true);
+    connect(pTimer, SIGNAL(timeout()), this, SLOT(update()));
+    pTimer->start(6000);*/
+
+   // pTimer->start(4000);
+   // pTimer->stop();
+    Boss *boss = new Boss(BossType::Soul);
+    int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(boss->getSize().width()));
     boss->setPos(nPos, 0);
     scene()->addItem(boss);
     connect(boss, &Boss::sigGameOver, this, &Game::onGameOver);
     connect(boss, &Boss::sigIncreaseScore, this, &Game::onIncreaseScore);
-    connect(boss, &Boss::sigWin, this, &Game::onGameOver);*/
+    connect(boss, &Boss::sigWin, this, &Game::onGameOver);
   }
   /*else
   {

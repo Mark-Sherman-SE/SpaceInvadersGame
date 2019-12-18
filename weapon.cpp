@@ -1,5 +1,6 @@
 #include "weapon.h"
 #include "enemy.h"
+#include "opponent.h"
 #include <QTimer>
 #include <QGraphicsScene>
 
@@ -81,37 +82,50 @@ void Weapon::setWeaponType(WeaponType weaponType)
 
 void Weapon::onMove()
 {
-  QList<QGraphicsItem *> lstCollidingItem= collidingItems();
-  for (auto const pItem : lstCollidingItem)
+  if (scene() != nullptr)
   {
-    Enemy *enemy = dynamic_cast<Enemy *>(pItem);
-    if (enemy != nullptr)
+    setPos(x(), y() - 2);
+    if (pos().y() < 0)
     {
-      /*if (enemy->getColor() == getColor())
-      {
-        scene()->removeItem(enemy);
-        scene()->removeItem(this);
-
-        emit sigIncreaseScore();
-        delete enemy;
-        delete this;
-      }
-      else
-      {
-        emit sigDecreaseScore();
-        scene()->removeItem(this);
-        delete this;
-      }*/
-      enemy->decreaseHealth(weaponDamage_);
       scene()->removeItem(this);
       delete this;
-      return;
     }
-  }
-  setPos(x(), y() - 2);
-  if (pos().y() < 0)
-  {
-    scene()->removeItem(this);
-    delete this;
+    else
+    {
+      QList<QGraphicsItem *> lstCollidingItem= collidingItems();
+      for (auto const pItem : lstCollidingItem)
+      {
+        Opponent *enemy = dynamic_cast<Opponent *>(pItem);
+        if (enemy != nullptr)
+        {
+          /*if (enemy->getColor() == getColor())
+          {
+            scene()->removeItem(enemy);
+            scene()->removeItem(this);
+
+            emit sigIncreaseScore();
+            delete enemy;
+            delete this;
+          }
+          else
+          {
+            emit sigDecreaseScore();
+            scene()->removeItem(this);
+            delete this;
+          }*/
+          enemy->decreaseHealth(weaponDamage_);
+          scene()->removeItem(this);
+          delete this;
+          return;
+        }
+      }
+    }
+
+   /* setPos(x(), y() - 2);
+    if (pos().y() < 0)
+    {
+      scene()->removeItem(this);
+      delete this;
+    }*/
   }
 }

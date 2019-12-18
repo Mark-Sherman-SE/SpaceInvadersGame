@@ -8,6 +8,8 @@
 //#include <QKeyEvent>
 #include <QTimer>
 
+#include "opponent.h"
+
 enum class EnemyType
 {
     Corporal, Interceptor, Fighter, Destroyer, Exterminator
@@ -19,11 +21,12 @@ const QSize FIGHTER_SIZE = QSize(190, 85);
 const QSize DESTROYER_SIZE = QSize(220, 100);
 const QSize EXTERMINATOR_SIZE = QSize(340, 190);
 
-class Enemy :  public QObject, public QGraphicsPixmapItem
+class Enemy :  public Opponent
 {
   Q_OBJECT
 public:
   Enemy(EnemyType enemyType, QGraphicsItem *pParent = nullptr);
+  //~Enemy() = default;
 
   //Enemy(const Enemy &);
 
@@ -32,8 +35,10 @@ public:
   //Enemy &operator =(const Enemy &);
 
   EnemyType getType() const;
-  void setType(EnemyType eColor);
-  void decreaseHealth(int damage);
+  void setType(EnemyType enemyType);
+  void decreaseHealth(int damage) override;
+
+  QSize getSize() const override;
 
 signals:
   void sigIncreaseScore(int);
@@ -41,11 +46,12 @@ signals:
   void sigGameOver();
 
 public slots:
-  void onMove();
+  void onMove() override;
 
 private:
   EnemyType enemyType_;
   QTimer *pTimer;
+  QSize size_;
   int enemySpeed_;
   int enemyHealth_;
   int points_;

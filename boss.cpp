@@ -1,25 +1,25 @@
 #include "boss.h"
-/*#include "player.h"
+#include "player.h"
 #include <QTimer>
 #include <QGraphicsScene>
 
 static bool path = true;
 
 Boss::Boss(BossType bossType, QGraphicsItem *pParent) :
-  QGraphicsPixmapItem(pParent)
+  Opponent()
 {
   setType(bossType);
 
   pTimer = new QTimer(this);
   connect(pTimer, &QTimer::timeout, this, &Boss::onMove);
-  pTimer->start(50);
-  if (y() == 0)
+  pTimer->start(500);
+  /*if (y() == 0)
   {
     pTimer->stop();
     disconnect(pTimer, &QTimer::timeout, this, &Boss::onMove);
     connect(pTimer, &QTimer::timeout, this, &Boss::onMove);
     pTimer->start(speed_);
-  }
+  }*/
 }
 
 void Boss::setType(BossType bossType)
@@ -31,10 +31,11 @@ void Boss::setType(BossType bossType)
     case BossType::Frost:
     {
         QPixmap oPixmap(":/images/Resources/images/Frost.png");
-        setPixmap(oPixmap.scaled(QSize(500, 170), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(FROST_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
-        speed_ = 20;
+        size_ = FROST_SIZE;
+        speed_ = 200;
         damage_ = 200;
         health_ = 10000;
         points_ = 10000;
@@ -43,10 +44,11 @@ void Boss::setType(BossType bossType)
     case BossType::Dominator:
     {
         QPixmap oPixmap(":/images/Resources/images/Dominator.png");
-        setPixmap(oPixmap.scaled(QSize(250, 500), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(DOMINATOR_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(180);
-        speed_ = 10;
+        size_ = DOMINATOR_SIZE;
+        speed_ = 100;
         health_ = 25000;
         damage_ = 100;
         points_ = 20000;
@@ -55,10 +57,11 @@ void Boss::setType(BossType bossType)
     case BossType::Soul:
     {
         QPixmap oPixmap(":/images/Resources/images/Soul.png");
-        setPixmap(oPixmap.scaled(QSize(150, 120), Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(SOUL_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
-        setRotation(90);
-        speed_ = 2;
+        setRotation(180);
+        size_ = SOUL_SIZE;
+        speed_ = 20;
         health_ = 2000;
         damage_ = 50;
         points_ = 5000;
@@ -79,13 +82,28 @@ void Boss::decreaseHealth(int damage)
   }
 }
 
+QSize Boss::getSize() const
+{
+  return size_;
+}
+
 void Boss::onMove()
 {
-  setPos(x(), y() + 2);
-  if (y() > 0)
+  if (y() < 0)
+  {
+    setPos(x(), y() + 2);
+  }
+  else
+  {
+    pTimer->stop();
+    disconnect(pTimer, &QTimer::timeout, this, &Boss::onMove);
+    connect(pTimer, &QTimer::timeout, this, &Boss::onAttack);
+    pTimer->start(speed_);
+  }
+ /* if (y() > 0)
   {
 
-  }
+  }*/
 }
 
 void Boss::onAttack()
@@ -94,14 +112,14 @@ void Boss::onAttack()
   if (path)
   {
       setPos(x() - 2, y());
-      path = x() > 0 ? true : false;
+      path = x() > -size_.width() * 0.75 ? true : false;
   }
   else
   {
     setPos(x() + 2, y());
-    path = x() < scene()->width() ? false : true;
+    path = x() < scene()->width() - size_.width() * 1.5 ? false : true;
   }
-  switch (bossType_)
+  /*switch (bossType_)
   {
     case BossType::Frost:
     {
@@ -131,6 +149,7 @@ void Boss::onAttack()
 
       connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
       bomb->setPos(x(), y());
+      break;
     }
     case BossType::Dominator:
     {
@@ -169,6 +188,8 @@ void Boss::onAttack()
         weapons[1]->setPos(x() + 40, y() - 10);
         scene()->addItem(weapons[1]);
         time_ = clock();
+
+        break;
       }
     }
     case BossType::Soul:
@@ -177,8 +198,8 @@ void Boss::onAttack()
       connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
       bomb->setPos(x() + 50, y() - 10);
     }
-  }
+  }*/
 
 
-}*/
+}
 

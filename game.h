@@ -15,6 +15,7 @@
 #include "enemy.h"
 #include "points.h"
 #include "boss.h"
+#include "opponent.h"
 
 const int VARIABLE_AMOUNT_OF_ENEMIES = 20;
 
@@ -41,9 +42,10 @@ private:
   Points *m_pPoints = nullptr;
   QTimer *pTimer = nullptr;
   QSize m_oScreenSize;
-  std::vector<Enemy *> enemies_;
-  std::vector<Enemy *>::iterator ourEnemy_;
+  std::vector<Opponent *> enemies_;
+  std::vector<Opponent *>::iterator ourEnemy_;
   //QList<Enemy *>::iterator currentEnemy_;
+  EnemyType enemyType_;
   std::size_t currentEnemy_;
 };
 

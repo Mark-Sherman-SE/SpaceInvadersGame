@@ -5,8 +5,7 @@
 #include <QGraphicsScene>
 
 Enemy::Enemy(EnemyType enemyType, QGraphicsItem *pParent) :
-  QObject(),
-  QGraphicsPixmapItem(pParent)
+  Opponent()
 {
   setType(enemyType);
 
@@ -66,6 +65,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(QSize(150, 70), Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
+        size_ = CORPORAL_SIZE;
         enemySpeed_ = 20;
         enemyHealth_ = 100;
         points_ = 10;
@@ -74,9 +74,10 @@ void Enemy::setType(EnemyType enemyType)
     case EnemyType::Interceptor:
     {
         QPixmap oPixmap(":/images/Resources/images/Interceptor.png");
-        setPixmap(oPixmap.scaled(CORPORAL_SIZE, Qt::KeepAspectRatio));
+        setPixmap(oPixmap.scaled(INTERCEPTOR_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
+        size_ = INTERCEPTOR_SIZE;
         enemySpeed_ = 10;
         enemyHealth_ = 25;
         points_ = 15;
@@ -88,6 +89,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(FIGHTER_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
+        size_ = FIGHTER_SIZE;
         enemySpeed_ = 25;
         enemyHealth_ = 200;
         points_ = 25;
@@ -99,6 +101,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(DESTROYER_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
+        size_ = DESTROYER_SIZE;
         enemySpeed_ = 30;
         enemyHealth_ = 500;
         points_ = 50;
@@ -110,6 +113,7 @@ void Enemy::setType(EnemyType enemyType)
         setPixmap(oPixmap.scaled(EXTERMINATOR_SIZE, Qt::KeepAspectRatio));
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
+        size_ = EXTERMINATOR_SIZE;
         enemySpeed_ = 40;
         enemyHealth_ = 1000;
         points_ = 100;
@@ -127,6 +131,11 @@ void Enemy::decreaseHealth(int damage)
     emit sigIncreaseScore(points_);
     delete this;
   }
+}
+
+QSize Enemy::getSize() const
+{
+  return size_;
 }
 
 void Enemy::onMove()
