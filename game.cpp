@@ -56,51 +56,6 @@ void Game::Run()
   }
   ourEnemy_ = enemies_.begin();
 
- /* std::size_t amountOfEnemies = 20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;//////////////////////////////
-
-  std::vector<Enemy> vect(amountOfEnemies, Enemy(EnemyType::Corporal));
-  enemies_ = vect;
-  for (std::size_t i = 0; i < amountOfEnemies; ++i)
-  {
-    int nType = rand() % 5;
-    enemies_[i].setType(static_cast<EnemyType>(nType));
-    int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_[i].x()));
-    enemies_[i].setPos(nPos, 0);
-  }
-  ourEnemy_ = &enemies_[0];*/ ///////////////////////////////////////////////////////////////////
-  /*int amountOfEnemies = 20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
-  for (int i = 0; i <= amountOfEnemies; ++i)
-  {
-    int nType = rand() % 5;
-
-    enemies_.emplace_back(static_cast<EnemyType>(nType));
-    ourEnemy_ = &(enemies_.back());
-    int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(ourEnemy_->x()));
-
-    ourEnemy_->setPos(nPos, 0);
-    connect(ourEnemy_, &Enemy::sigGameOver, this, &Game::onGameOver);
-    connect(ourEnemy_, &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-    connect(ourEnemy_, &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
-    enemies_.push_back(pEnemy);
-  }
-  ourEnemy_ = &(enemies_.front());*/
-  ////////////////////////////////////////////////
-  /*int amountOfEnemies = 20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
-    for (int i = 0; i <= amountOfEnemies; ++i)
-    {
-      int nType = rand() % 5;
-      Enemy *pEnemy = new Enemy(static_cast<EnemyType>(nType));
-      enemies_.push_back(pEnemy);
-      //delete pEnemy;
-     // int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_.back()->x()));
-      //enemies_.back()->setPos(nPos, 0);
-
-     connect(enemies_.back(), &Enemy::sigGameOver, this, &Game::onGameOver);
-      connect(enemies_.back(), &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-      connect(enemies_.back(), &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
-    }*/
-    //currentEnemy_ = &enemies_.front();
-////////////////////////////////////////////////////////////////////////////////
   m_pPoints = new Points();
   scene()->addItem(m_pPoints);
 
@@ -222,64 +177,37 @@ void Game::onCreateEnemy()
     connect(boss, &Boss::sigIncreaseScore, this, &Game::onIncreaseScore);
     connect(boss, &Boss::sigWin, this, &Game::onGameOver);
   }
-  /*else
-  {
-    ++ourEnemy_;
-  }*/
-  /////////////////////////////////
-  /*int nType = rand() % 5;
-  Enemy *pEnemy = new Enemy(static_cast<EnemyType>(nType));
-  enemies_.push_back(pEnemy);
-  int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_.back()->x()));
-
-  enemies_.back()->setPos(nPos, 0);
-  scene()->addItem(enemies_.back());
-  connect(enemies_.back(), &Enemy::sigGameOver, this, &Game::onGameOver);
-  connect(enemies_.back(), &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-  connect(enemies_.back(), &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);*/
-  /////////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  /*int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(enemies_.back()->x()));
-  enemies_.at(currentEnemy_)->setPos(nPos, 0);
-
-  scene()->addItem(enemies_.at(currentEnemy_));
-  connect(enemies_.at(currentEnemy_), &Enemy::sigGameOver, this, &Game::onGameOver);
-  connect(enemies_.at(currentEnemy_), &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-  connect(enemies_.at(currentEnemy_), &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
-  ++currentEnemy_;
-  if (enemies_[currentEnemy_] == nullptr)
-  {
-    pTimer->stop();
-  }*/
-  /*scene()->addItem(currentEnemy_);
-  if (std::next(currentEnemy_) == nullptr)
-  {
-    pTimer->stop();
-  }
-  else
-  {
-    ++currentEnemy_;
-  }*/
-////////////////////////
-  //currentEnemy_.
-  //Enemy *pEnemy = *currentEnemy_;
-  /////////////////////////////////////////
- /* int nPos = rand() % (m_oScreenSize.width() - static_cast<int>((*currentEnemy_)->x()));
-  (*currentEnemy_)->setPos(nPos, 0);
-  scene()->addItem((*currentEnemy_));
-  connect(*currentEnemy_, &Enemy::sigGameOver, this, &Game::onGameOver);
-  connect(*currentEnemy_, &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
-  connect(*currentEnemy_, &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
-  if (std::next(*currentEnemy_) == nullptr)
-  {
-    pTimer->stop();
-  }
-  else
-  {
-    currentEnemy_++;
-  }*/
-  //////////////////////////////////////
- // enemies_.push_back(pEnemy);
 }
+
+/*void Game::displayMainMenu()
+{
+    // create title text
+    QGraphicsTextItem *titleText = new QGraphicsTextItem(QString("Space Invaders"));
+    QFont titleFont("comic sans", 50);
+    titleText->setFont(titleFont);
+    int xTitlePos = this->width()/2 - titleText->boundingRect().width()/2;
+    int yTitlePos = 150;
+    titleText->setPos(xTitlePos, yTitlePos);
+    scene()->addItem(titleText);
+
+    // create play button
+    Button *playButton = new Button(QString("Play"));
+    int xPlayPos = this->width()/2 - playButton->boundingRect().width()/2;
+    int yPlayPos = 275;
+    playButton->setPos(xPlayPos, yPlayPos);
+    connect(playButton, &Button::clicked, this, &Game::onGameOver);
+    scene()->addItem(playButton);
+
+    // create settings button
+
+    // create quit button
+    Button *quitButton = new Button(QString("Quit"));
+    int xQuitPos = this->width()/2 - quitButton->boundingRect().width()/2;
+    int yQuitPos = 425;
+    quitButton->setPos(xQuitPos, yQuitPos);
+    connect(quitButton, &Button::clicked, this, &Game::onGameOver);
+    scene()->addItem(quitButton);
+}*/
 
 void Game::onIncreaseScore(int points)
 {

@@ -1,14 +1,16 @@
 #include "weapon.h"
 #include "enemy.h"
 #include "opponent.h"
+#include "player.h"
 #include <QTimer>
 #include <QGraphicsScene>
 
-Weapon::Weapon(WeaponType weaponType, QGraphicsItem *pParent) :
+Weapon::Weapon(WeaponType weaponType, Holder holder, QGraphicsItem *pParent) :
   QGraphicsPixmapItem(pParent)
   /*weaponRate_(weaponRate),
   weaponDamage_(weaponDamage)*/
 {
+  holderCoefficient_ = holder == Holder::Player ? 1 : -1;
   setWeaponType(weaponType);
   QTimer *pTimer = new QTimer(this);
   connect(pTimer, &QTimer::timeout, this, &Weapon::onMove);
@@ -64,7 +66,7 @@ void Weapon::setWeaponType(WeaponType weaponType)
       setPixmap(newPixmap);
       weaponRate_ = 20;
       weaponDamage_ = 20;
-      weaponDelay_ = 120;
+      weaponDelay_ = 200;
       break;
     }
     default:
@@ -84,15 +86,15 @@ void Weapon::onMove()
 {
   if (scene() != nullptr)
   {
-    setPos(x(), y() - 2);
-    if (pos().y() < 0)
+    setPos(x(), y() - 2 * holderCoefficient_);
+    if (pos().y() < 0 || pos().y() > scene()->height())
     {
       scene()->removeItem(this);
       delete this;
     }
-    else
+    else if (holderCoefficient_ == 1)
     {
-      QList<QGraphicsItem *> lstCollidingItem= collidingItems();
+      QList<QGraphicsItem *> lstCollidingItem = collidingItems();
       for (auto const pItem : lstCollidingItem)
       {
         Opponent *enemy = dynamic_cast<Opponent *>(pItem);
@@ -120,12 +122,21 @@ void Weapon::onMove()
         }
       }
     }
-
-   /* setPos(x(), y() - 2);
-    if (pos().y() < 0)
+    else
     {
-      scene()->removeItem(this);
-      delete this;
-    }*/
+      QList<QGraphicsItem *> lstCollidingItem = collidingItems();
+      for (auto const pItem : lstCollidingItem)
+      {
+        Player *player = dynamic_cast<Player *>(pItem);
+        if (player != nullptr)
+        {
+
+          player->decreaseHealth(weaponDamage_);
+          scene()->removeItem(this);
+          delete this;
+          return;
+        }
+      }
+    }
   }
 }

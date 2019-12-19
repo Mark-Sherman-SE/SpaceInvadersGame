@@ -27,11 +27,16 @@ public:
 
   void shoot();
 
+  void decreaseHealth(int damage);
+
 signals:
  // void sigMove();
   void sigIncreaseScore(int);
   void sigDecreaseScore();
 
+  void sigDecreaseHealth();
+
+  void sigGameOver();
   ////////////////////////////
 /*public slots:
   void keyPress(QKeyEvent *event);*/
@@ -39,6 +44,7 @@ signals:
 private:
   WeaponType weaponType_;
   clock_t time_ = 0;
+  int health_;
 };
 
 #endif // PLAYER_H

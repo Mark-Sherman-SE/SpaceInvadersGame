@@ -12,11 +12,16 @@ enum class WeaponType
   Bullet, Laser, Bomb
 };
 
+enum class Holder
+{
+  Player, Enemy
+};
+
 class Weapon :  public QObject, public QGraphicsPixmapItem
 {
   Q_OBJECT
 public:
-  Weapon(WeaponType weaponType, QGraphicsItem *pParent = nullptr);
+  Weapon(WeaponType weaponType, Holder holder, QGraphicsItem *pParent = nullptr);
 
   WeaponType getWeaponType() const;
   int getWeaponDelay() const;
@@ -30,10 +35,12 @@ public slots:
   void onMove();
 
 private:
+
   WeaponType weaponType_;
   int weaponRate_;
   int weaponDamage_;
   int weaponDelay_;
+  int holderCoefficient_;
 
 };
 

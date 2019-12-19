@@ -5,7 +5,8 @@
 
 Player::Player(QGraphicsItem *pParent) :
   QObject(),
-  QGraphicsPixmapItem(pParent)
+  QGraphicsPixmapItem(pParent),
+  health_(2000)
 {
   QPixmap oPixmap(":/images/Resources/images/RedPlayer.png");
   setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
@@ -17,7 +18,7 @@ Player::Player(QGraphicsItem *pParent) :
 
 void Player::shoot()
 {
-  Weapon *pBullet = new Weapon(weaponType_);
+  Weapon *pBullet = new Weapon(weaponType_, Holder::Player);
   if (clock() - time_ < pBullet->getWeaponDelay())
   {
     delete pBullet;
@@ -32,6 +33,17 @@ void Player::shoot()
     pBullet->setPos(x() + 27, y() - 10);
     scene()->addItem(pBullet);
     time_ = clock();
+  }
+}
+
+void Player::decreaseHealth(int damage)
+{
+  health_ -= damage;
+  if (health_ <= 0)
+  {
+    scene()->removeItem(this);
+    emit sigGameOver();
+    delete this;
   }
 }
 

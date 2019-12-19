@@ -16,6 +16,7 @@
 #include "points.h"
 #include "boss.h"
 #include "opponent.h"
+#include "button.h"
 
 const int VARIABLE_AMOUNT_OF_ENEMIES = 20;
 
@@ -27,6 +28,8 @@ public:
 
   void Run();
   void CheckPoints();
+
+  //void displayMainMenu();
 
 protected:
   void keyPressEvent(QKeyEvent *event) override;

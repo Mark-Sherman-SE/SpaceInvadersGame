@@ -119,13 +119,13 @@ void Boss::onAttack()
     setPos(x() + 2, y());
     path = x() < scene()->width() - size_.width() * 1.5 ? false : true;
   }
-  /*switch (bossType_)
+ /* switch (bossType_)
   {
     case BossType::Frost:
     {
-      Weapon *bomb = new Weapon(WeaponType::Bomb);
-      Weapon *leftBullet = new Weapon(WeaponType::Bullet);
-      Weapon *rightBullet = new Weapon(WeaponType::Bullet);
+      Weapon *bomb = new Weapon(WeaponType::Bomb, Holder::Enemy);
+      Weapon *leftBullet = new Weapon(WeaponType::Bullet, Holder::Enemy);
+      Weapon *rightBullet = new Weapon(WeaponType::Bullet, Holder::Enemy);
 
       if (clock() - time_ < leftBullet->getWeaponDelay())
       {
@@ -156,9 +156,9 @@ void Boss::onAttack()
       Weapon *weapons[4];
       for (int i = 0; i < 4; ++i)
       {
-        weapons[i] = new Weapon(WeaponType::Bullet);
+        weapons[i] = new Weapon(WeaponType::Bullet, Holder::Enemy);
       }
-      Weapon *laser = new Weapon(WeaponType::Laser);
+      Weapon *laser = new Weapon(WeaponType::Laser, Holder::Enemy);
       if (clock() - time_ < weapons[0]->getWeaponDelay())
       {
         delete weapons[0];
@@ -194,7 +194,7 @@ void Boss::onAttack()
     }
     case BossType::Soul:
     {
-      Weapon *bomb = new Weapon(WeaponType::Bomb);
+      Weapon *bomb = new Weapon(WeaponType::Bomb, Holder::Enemy);
       connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
       bomb->setPos(x() + 50, y() - 10);
     }
