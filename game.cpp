@@ -179,26 +179,31 @@ void Game::onCreateEnemy()
   }
 }
 
-/*void Game::displayMainMenu()
+void Game::displayMainMenu()
 {
     // create title text
-    QGraphicsTextItem *titleText = new QGraphicsTextItem(QString("Space Invaders"));
+    QGraphicsPixmapItem *title = new QGraphicsPixmapItem();
+    QPixmap oPixmap(":/images/Resources/images/mainLogo.png");
+    title->setPixmap(oPixmap.scaled(QSize(400, 1000), Qt::KeepAspectRatio));
+    /*QGraphicsTextItem *titleText = new QGraphicsTextItem(QString("Space Invaders"));
     QFont titleFont("comic sans", 50);
     titleText->setFont(titleFont);
     int xTitlePos = this->width()/2 - titleText->boundingRect().width()/2;
     int yTitlePos = 150;
     titleText->setPos(xTitlePos, yTitlePos);
-    scene()->addItem(titleText);
+    scene()->addItem(titleText);*/
+    int xTitlePos = this->width()/2 - title->boundingRect().width()/2;
+    int yTitlePos = 150;
+    title->setPos(xTitlePos, yTitlePos);
+    scene()->addItem(title);
 
     // create play button
     Button *playButton = new Button(QString("Play"));
     int xPlayPos = this->width()/2 - playButton->boundingRect().width()/2;
     int yPlayPos = 275;
     playButton->setPos(xPlayPos, yPlayPos);
-    connect(playButton, &Button::clicked, this, &Game::onGameOver);
+    connect(playButton, &Button::clicked, this, &Game::Run);
     scene()->addItem(playButton);
-
-    // create settings button
 
     // create quit button
     Button *quitButton = new Button(QString("Quit"));
@@ -207,7 +212,36 @@ void Game::onCreateEnemy()
     quitButton->setPos(xQuitPos, yQuitPos);
     connect(quitButton, &Button::clicked, this, &Game::onGameOver);
     scene()->addItem(quitButton);
-}*/
+}
+
+void Game::displayGameOverMenu()
+{
+  scene()->clear();
+
+  QGraphicsPixmapItem *title = new QGraphicsPixmapItem();
+  QPixmap oPixmap(":/images/Resources/images/result.jpg");
+  QRect rect(108, 150, 370, 181);
+  QPixmap newPixmap = oPixmap.copy(rect);
+  title->setPixmap(newPixmap.scaled(QSize(400, 1000), Qt::KeepAspectRatio));
+  int xTitlePos = this->width()/2 - title->boundingRect().width()/2;
+  int yTitlePos = 150;
+  title->setPos(xTitlePos, yTitlePos);
+  scene()->addItem(title);
+
+  Button *retryButton = new Button(QString("Retry"));
+  int xPlayPos = this->width()/2 - retryButton->boundingRect().width()/2;
+  int yPlayPos = 275;
+  retryButton->setPos(xPlayPos, yPlayPos);
+  connect(retryButton, &Button::clicked, this, &Game::Run);
+  scene()->addItem(retryButton);
+
+  Button *quitButton = new Button(QString("Quit"));
+  int xQuitPos = this->width()/2 - quitButton->boundingRect().width()/2;
+  int yQuitPos = 425;
+  quitButton->setPos(xQuitPos, yQuitPos);
+  connect(quitButton, &Button::clicked, this, &Game::onGameOver);
+  scene()->addItem(quitButton);
+}
 
 void Game::onIncreaseScore(int points)
 {

@@ -18,7 +18,7 @@ Player::Player(QGraphicsItem *pParent) :
 
 void Player::shoot()
 {
-  Weapon *pBullet = new Weapon(weaponType_, Holder::Player);
+  Weapon *pBullet = new Weapon(/*weaponType_*/ WeaponType::Bullet, Holder::Player);
   if (clock() - time_ < pBullet->getWeaponDelay())
   {
     delete pBullet;

@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-/*#include <QGraphicsRectItem>
+#include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 
 class Button: public QObject, public QGraphicsRectItem
@@ -24,6 +24,6 @@ signals:
 private:
     QGraphicsTextItem *text;
 
-};*/
+};
 
 #endif // BUTTON_H

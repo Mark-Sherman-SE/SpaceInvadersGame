@@ -26,7 +26,7 @@ class Game : public QGraphicsView
 public:
   Game(QSize oScreenSize, QWidget *pParent = nullptr);
 
-  void Run();
+  //void Run();
   void CheckPoints();
 
   //void displayMainMenu();
@@ -35,6 +35,10 @@ protected:
   void keyPressEvent(QKeyEvent *event) override;
 
 public slots:
+  void displayMainMenu();
+  void displayGameOverMenu();
+  //void displayGameWinMenu();
+  void Run();
   void onCreateEnemy();
   void onIncreaseScore(int points);
   void onDecreaseScore();

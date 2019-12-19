@@ -11,5 +11,7 @@
         <file>Resources/images/Dominator.png</file>
         <file>Resources/images/Frost.png</file>
         <file>Resources/images/Soul.png</file>
+        <file>Resources/images/mainLogo.png</file>
+        <file>Resources/images/result.jpg</file>
     </qresource>
 </RCC>

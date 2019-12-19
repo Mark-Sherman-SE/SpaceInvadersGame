@@ -1,8 +1,9 @@
 #include "button.h"
-/*#include <QGraphicsTextItem>
+#include <QGraphicsTextItem>
 #include <QBrush>
 
-Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent){
+Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent)
+{
     // draw the rect
     setRect(0,0,200,50);
     QBrush brush;
@@ -20,11 +21,13 @@ Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent){
     setAcceptHoverEvents(true);
 }
 
-void Button::mousePressEvent(QGraphicsSceneMouseEvent *event){
+void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
     emit clicked();
 }
 
-void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
+void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
     // change color
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
@@ -32,10 +35,11 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
     setBrush(brush);
 }
 
-void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
+void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
     // change color
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::darkCyan);
     setBrush(brush);
-}*/
+}
