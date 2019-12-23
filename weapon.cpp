@@ -40,6 +40,11 @@ void Weapon::setWeaponType(WeaponType weaponType)
       QRect rect(172, 111, 11, 11); //183. 122
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
+      if (holderCoefficient_ == -1)
+      {
+        setTransformOriginPoint(newPixmap.height() / 2, newPixmap.width() / 2);
+        setRotation(180);
+      }
       weaponRate_ = 5;
       weaponDamage_ = 50;
       weaponDelay_ = 100;
@@ -52,6 +57,11 @@ void Weapon::setWeaponType(WeaponType weaponType)
       QRect rect(362, 8, 14, 22);
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
+      if (holderCoefficient_ == -1)
+      {
+        setTransformOriginPoint(newPixmap.height() / 2, newPixmap.width() / 2);
+        setRotation(180);
+      }
       weaponRate_ = 10;
       weaponDamage_ = 10;
       weaponDelay_ = 120;
@@ -61,9 +71,14 @@ void Weapon::setWeaponType(WeaponType weaponType)
     {
       //QPixmap oPixmap(":/images/Resources/images/Weapons.png");
      // setPixmap(oPixmap.scaled(QSize(40, 40), Qt::KeepAspectRatio));
-      QRect rect(201, 196, 11, 24); //212, 210
+      QRect rect(201, 196, 11, 25); //212, 210
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
+      if (holderCoefficient_ == -1)
+      {
+        setTransformOriginPoint(newPixmap.height() / 2, newPixmap.width() / 2);
+        setRotation(180);
+      }
       weaponRate_ = 20;
       weaponDamage_ = 20;
       weaponDelay_ = 200;
@@ -74,6 +89,11 @@ void Weapon::setWeaponType(WeaponType weaponType)
       QRect rect(172, 111, 11, 11); //183. 122
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
+      if (holderCoefficient_ == -1)
+      {
+        setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
+        setRotation(180);
+      }
       weaponRate_ = 100;
       weaponDamage_ = 5;
       weaponDelay_ = 120;
@@ -115,8 +135,9 @@ void Weapon::onMove()
             scene()->removeItem(this);
             delete this;
           }*/
-          enemy->decreaseHealth(weaponDamage_);
           scene()->removeItem(this);
+          enemy->decreaseHealth(weaponDamage_);
+          //scene()->removeItem(this);
           delete this;
           return;
         }
@@ -130,7 +151,6 @@ void Weapon::onMove()
         Player *player = dynamic_cast<Player *>(pItem);
         if (player != nullptr)
         {
-
           player->decreaseHealth(weaponDamage_);
           scene()->removeItem(this);
           delete this;

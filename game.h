@@ -48,6 +48,7 @@ private:
   Player *m_pPlayer = nullptr;
   Points *m_pPoints = nullptr;
   QTimer *pTimer = nullptr;
+  int scorePoints;
   QSize m_oScreenSize;
   std::vector<Opponent *> enemies_;
   std::vector<Opponent *>::iterator ourEnemy_;

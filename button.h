@@ -14,6 +14,7 @@ public:
     // methods (events)
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    //void hoverPressEvent();
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 signals:

@@ -9,6 +9,7 @@ static int ENEMY_NUMBER = 0;
 
 Game::Game(QSize oScreenSize, QWidget *pParent) :
   QGraphicsView(pParent),
+  scorePoints(0),
   m_oScreenSize(oScreenSize),
   currentEnemy_(0)
 {
@@ -27,12 +28,16 @@ void Game::Run()
 {
   scene()->clear();
   setCursor(Qt::BlankCursor);
+
+  scorePoints = 0;
+
   m_pPlayer = new Player();
   m_pPlayer->setPos(m_oScreenSize.width() / 2, m_oScreenSize.height() - gPlayerSize.height());
   m_pPlayer->setFlag(QGraphicsItem::ItemIsFocusable);
   m_pPlayer->setFocus();
   scene()->addItem(m_pPlayer);
 
+  connect(m_pPlayer, &Player::sigGameOver, this, &Game::displayGameOverMenu);
   connect(m_pPlayer, &Player::sigIncreaseScore, this, &Game::onIncreaseScore);
   connect(m_pPlayer, &Player::sigDecreaseScore, this, &Game::onDecreaseScore);
   /////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +73,7 @@ void Game::Run()
 
 void Game::CheckPoints()
 {
+  //scorePoints += m_pPoints->getScore();
   if ((m_pPoints->getScore() < 0) || (m_pPoints->getHealth() <= 0))
   {
     m_pPoints->reset();
@@ -81,39 +87,44 @@ void Game::keyPressEvent(QKeyEvent *event)
   {
     return;
   }
-  switch (event->key())
+  else
   {
-    case Qt::Key_Left:
+    switch (event->key())
     {
-      if (m_pPlayer->pos().x() > 0)
+      case Qt::Key_Left:
       {
-        m_pPlayer->setPos(m_pPlayer->x() - 20, m_pPlayer->y());
+        if (m_pPlayer->pos().x() > 0)
+        {
+          m_pPlayer->setPos(m_pPlayer->x() - 20, m_pPlayer->y());
+        }
+        break;
       }
-      break;
-    }
-    case Qt::Key_Right:
-    {
-      if (m_pPlayer->pos().x() + gPlayerSize.width() < m_oScreenSize.width())
+      case Qt::Key_Right:
       {
-        m_pPlayer->setPos(m_pPlayer->x() + 20, m_pPlayer->y());
+        if (m_pPlayer->pos().x() + gPlayerSize.width() < m_oScreenSize.width())
+        {
+          m_pPlayer->setPos(m_pPlayer->x() + 20, m_pPlayer->y());
+        }
+        break;
       }
-      break;
-    }
-   /* case Qt::Key_Z:
-    {
-      int nColor = static_cast<int>(m_pPlayer->getColor());
-      ++nColor;
-      if (nColor > static_cast<int>(EColor::Blue))
+     /* case Qt::Key_Z:
       {
-        nColor = static_cast<int>(EColor::Red);
+        int nColor = static_cast<int>(m_pPlayer->getColor());
+        ++nColor;
+        if (nColor > static_cast<int>(EColor::Blue))
+        {
+          nColor = static_cast<int>(EColor::Red);
+        }
+        m_pPlayer->setColor(static_cast<EColor>(++nColor));
+        break;
+      }*/
+      case Qt::Key_Space:
+      {
+        m_pPlayer->shoot();
+        break;
       }
-      m_pPlayer->setColor(static_cast<EColor>(++nColor));
-      break;
-    }*/
-    case Qt::Key_Space:
-    {
-      m_pPlayer->shoot();
-      break;
+      default:
+        break;
     }
   }
 }
@@ -142,7 +153,7 @@ void Game::onCreateEnemy()
   qDebug() << "start1";
   scene()->addItem(*ourEnemy_);
   qDebug() << "start2";
-  connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigGameOver, this, &Game::onGameOver);
+  connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigGameOver, this, &Game::displayGameOverMenu);
   connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigDecreaseHealth, this, &Game::onDecreaseHealth);
   connect(dynamic_cast<Enemy *>(*ourEnemy_), &Enemy::sigIncreaseScore, this, &Game::onIncreaseScore);
   enemyType_ = (dynamic_cast<Enemy *>(*ourEnemy_))->getType();
@@ -155,7 +166,7 @@ void Game::onCreateEnemy()
     pTimer->stop();
     disconnect(pTimer, &QTimer::timeout, this, &Game::onCreateEnemy);
 
-    QTime dieTime= QTime::currentTime().addSecs(5 * static_cast<int>(enemyType_));
+    QTime dieTime= QTime::currentTime().addSecs(15);
 
     while (QTime::currentTime() < dieTime)
     {
@@ -173,50 +184,70 @@ void Game::onCreateEnemy()
     int nPos = rand() % (m_oScreenSize.width() - static_cast<int>(boss->getSize().width()));
     boss->setPos(nPos, 0);
     scene()->addItem(boss);
-    connect(boss, &Boss::sigGameOver, this, &Game::onGameOver);
+    connect(boss, &Boss::sigGameOver, this, &Game::displayGameOverMenu);
     connect(boss, &Boss::sigIncreaseScore, this, &Game::onIncreaseScore);
-    connect(boss, &Boss::sigWin, this, &Game::onGameOver);
+    connect(boss, &Boss::sigWin, this, &Game::displayGameOverMenu);
   }
 }
 
 void Game::displayMainMenu()
 {
     // create title text
-    QGraphicsPixmapItem *title = new QGraphicsPixmapItem();
-    QPixmap oPixmap(":/images/Resources/images/mainLogo.png");
-    title->setPixmap(oPixmap.scaled(QSize(400, 1000), Qt::KeepAspectRatio));
-    /*QGraphicsTextItem *titleText = new QGraphicsTextItem(QString("Space Invaders"));
-    QFont titleFont("comic sans", 50);
-    titleText->setFont(titleFont);
-    int xTitlePos = this->width()/2 - titleText->boundingRect().width()/2;
-    int yTitlePos = 150;
-    titleText->setPos(xTitlePos, yTitlePos);
-    scene()->addItem(titleText);*/
-    int xTitlePos = this->width()/2 - title->boundingRect().width()/2;
-    int yTitlePos = 150;
-    title->setPos(xTitlePos, yTitlePos);
-    scene()->addItem(title);
+  scene()->clear();
+  QGraphicsPixmapItem *title = new QGraphicsPixmapItem();
+  QPixmap oPixmap(":/images/Resources/images/mainLogo.png");
+  title->setPixmap(oPixmap.scaled(QSize(400, 1000), Qt::KeepAspectRatio));
+  /*QGraphicsTextItem *titleText = new QGraphicsTextItem(QString("Space Invaders"));
+  QFont titleFont("comic sans", 50);
+  titleText->setFont(titleFont);
+  int xTitlePos = this->width()/2 - titleText->boundingRect().width()/2;
+  int yTitlePos = 150;
+  titleText->setPos(xTitlePos, yTitlePos);
+  scene()->addItem(titleText);*/
+  int xTitlePos = this->width()/2 - title->boundingRect().width()/2;
+  int yTitlePos = 150;
+  title->setPos(xTitlePos, yTitlePos);
+  scene()->addItem(title);
 
-    // create play button
-    Button *playButton = new Button(QString("Play"));
-    int xPlayPos = this->width()/2 - playButton->boundingRect().width()/2;
-    int yPlayPos = 275;
-    playButton->setPos(xPlayPos, yPlayPos);
-    connect(playButton, &Button::clicked, this, &Game::Run);
-    scene()->addItem(playButton);
+  // create play button
+  Button *playButton = new Button(QString("Play"));
+  int xPlayPos = this->width()/2 - playButton->boundingRect().width()/2;
+  int yPlayPos = 275;
+  playButton->setPos(xPlayPos, yPlayPos);
+  connect(playButton, &Button::clicked, this, &Game::Run);
+  scene()->addItem(playButton);
 
-    // create quit button
-    Button *quitButton = new Button(QString("Quit"));
-    int xQuitPos = this->width()/2 - quitButton->boundingRect().width()/2;
-    int yQuitPos = 425;
-    quitButton->setPos(xQuitPos, yQuitPos);
-    connect(quitButton, &Button::clicked, this, &Game::onGameOver);
-    scene()->addItem(quitButton);
+  // create quit button
+  Button *quitButton = new Button(QString("Quit"));
+  int xQuitPos = this->width()/2 - quitButton->boundingRect().width()/2;
+  int yQuitPos = 425;
+  quitButton->setPos(xQuitPos, yQuitPos);
+  connect(quitButton, &Button::clicked, this, &Game::onGameOver);
+  scene()->addItem(quitButton);
 }
 
 void Game::displayGameOverMenu()
 {
+  //int scorePoints = m_pPoints->getScore();
+  pTimer->stop();
+  disconnect(pTimer, &QTimer::timeout, this, &Game::onCreateEnemy);
+ /* disconnect(m_pPlayer, &Player::sigGameOver, this, &Game::displayGameOverMenu);
+  disconnect(m_pPlayer, &Player::sigIncreaseScore, this, &Game::onIncreaseScore);
+  disconnect(m_pPlayer, &Player::sigDecreaseScore, this, &Game::onDecreaseScore);*/
+  //delete *ourEnemy_;
+  enemies_.clear();
+
   scene()->clear();
+  setCursor(Qt::ArrowCursor);
+
+  //int scorePoints = m_pPoints->getScore();
+
+  scene()->items().clear();
+
+  //delete m_pPlayer;
+  m_pPlayer = nullptr;
+
+  //SetKeyboardState()
 
   QGraphicsPixmapItem *title = new QGraphicsPixmapItem();
   QPixmap oPixmap(":/images/Resources/images/result.jpg");
@@ -228,12 +259,27 @@ void Game::displayGameOverMenu()
   title->setPos(xTitlePos, yTitlePos);
   scene()->addItem(title);
 
+  QGraphicsTextItem *score = new QGraphicsTextItem(QString("Score: ") + QString::number(scorePoints));
+  QFont scoreFont("comic sans", 50);
+  score->setFont(scoreFont);
+  int xScorePos = this->width() / 2 - score->boundingRect().width() / 2;
+  int yScorePos = 200;
+  score->setPos(xScorePos, yScorePos);
+  scene()->addItem(score);
+
   Button *retryButton = new Button(QString("Retry"));
   int xPlayPos = this->width()/2 - retryButton->boundingRect().width()/2;
   int yPlayPos = 275;
   retryButton->setPos(xPlayPos, yPlayPos);
   connect(retryButton, &Button::clicked, this, &Game::Run);
   scene()->addItem(retryButton);
+
+  Button *menuButton = new Button(QString("Menu"));
+  int xMenuPos = this->width()/2 - menuButton->boundingRect().width()/2;
+  int yMenuPos = 350;
+  menuButton->setPos(xMenuPos, yMenuPos);
+  connect(menuButton, &Button::clicked, this, &Game::displayMainMenu);
+  scene()->addItem(menuButton);
 
   Button *quitButton = new Button(QString("Quit"));
   int xQuitPos = this->width()/2 - quitButton->boundingRect().width()/2;
@@ -245,6 +291,7 @@ void Game::displayGameOverMenu()
 
 void Game::onIncreaseScore(int points)
 {
+  scorePoints += points;
   m_pPoints->increaseScore(points);
   CheckPoints();
 }
