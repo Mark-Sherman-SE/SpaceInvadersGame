@@ -1,24 +1,25 @@
 #include "player.h"
-#include <QKeyEvent>
-
 #include <QGraphicsScene>
 
-Player::Player(QGraphicsItem *pParent) :
+//конструктор
+Player::Player(WeaponType weaponType, QGraphicsItem *pParent) :
   QObject(),
   QGraphicsPixmapItem(pParent),
+  weaponType_(weaponType),
   health_(2000)
 {
+  //устанавливаем модель игрока
   QPixmap oPixmap(":/images/Resources/images/RedPlayer.png");
   setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
-  /////////////////////
-  /*QTimer *pTimer = new QTimer(this);
-  connect(pTimer, &QTimer::timeout, this, &Player::keyPressEvent);
-  pTimer->start(2);*/
 }
 
+//метод стрельбы, каждый раз при стрельбе создаём боеприпас необходимого типа оружия
+//далее проверяем, прошло ли необходимое время после предыдущей атаки
+//если нет - удаляем созданный боеприпас, если да - соединяем необходимые сигналы, устанавливаем позицию оружия
+//и добавляем его на сцену
 void Player::shoot()
 {
-  Weapon *pBullet = new Weapon(/*weaponType_*/ WeaponType::Bullet, Holder::Player);
+  Weapon *pBullet = new Weapon(weaponType_, Holder::Player);
   if (clock() - time_ < pBullet->getWeaponDelay())
   {
     delete pBullet;
@@ -26,7 +27,6 @@ void Player::shoot()
   }
   else
   {
-    //Weapon *pBullet = new Weapon(weaponType_);
     connect(pBullet, &Weapon::sigIncreaseScore, this, &Player::sigIncreaseScore);
     connect(pBullet, &Weapon::sigDecreaseScore, this, &Player::sigDecreaseScore);
 
@@ -35,10 +35,11 @@ void Player::shoot()
     time_ = clock();
   }
 }
-
+//метод уменьшения здоровья
 void Player::decreaseHealth(int damage)
 {
   health_ -= damage;
+  //если здоровье кончилось - посылаем сигнал окончания игры
   if (health_ <= 0)
   {
     scene()->removeItem(this);
@@ -47,68 +48,8 @@ void Player::decreaseHealth(int damage)
   }
 }
 
-/*void Player::keyPressEvent(QKeyEvent *event)
+//метод получения очков здоровья
+int Player::getHealth() const
 {
-  switch (event->key())
-  {
-    case Qt::Key_Left:
-    {
-      if (this->pos().x() > 0)
-      {
-        this->setPos(this->x() - 20, this->y());
-      }
-      break;
-    }
-    case Qt::Key_Right:
-    {
-      if (this->pos().x() + gPlayerSize.width() < 1920)
-      {
-        this->setPos(this->x() + 20, this->y());
-      }
-      break;
-    }
-    case Qt::Key_Space:
-    {
-      this->shoot();
-      break;
-    }
-  }
-}*/
-
-/*EColor Player::getColor() const
-{
-  return m_eColor;
-}*/
-
-/*void Player::setColor(EColor eColor)
-{
-  m_eColor = eColor;
-  switch (eColor)
-  {
-    case EColor::Red:
-    {
-        QPixmap oPixmap(":/images/Resources/images/RedCannon.png");
-        setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
-        break;
-    }
-    case EColor::Blue:
-    {
-        QPixmap oPixmap(":/images/Resources/images/BlueCannon.png");
-        setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
-        break;
-    }
-    case EColor::Pink:
-    {
-        QPixmap oPixmap(":/images/Resources/images/PinkCannon.png");
-        setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
-        break;
-    }
-    default:
-    {
-        QPixmap oPixmap(":/images/Resources/images/RedCannon.png");
-        setPixmap(oPixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio));
-        m_eColor = EColor::Red;
-        break;
-    }
-  }
-}*/
+  return health_;
+}

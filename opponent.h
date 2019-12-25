@@ -5,6 +5,9 @@
 #include <QGraphicsPixmapItem>
 #include <QSize>
 
+//виртуальный класс опонента, от него наследуется класс врага(Enemy) и босса(Boss)
+//Opponent наследуется от QObject и QGraphicsPixmapItem, чтобы потомки могли корректно передвигаться
+//и иметь собственные модели
 class Opponent : public QObject, public QGraphicsPixmapItem
 {
   Q_OBJECT

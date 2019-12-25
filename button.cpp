@@ -2,22 +2,23 @@
 #include <QGraphicsTextItem>
 #include <QBrush>
 
+//конструктор
 Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent)
 {
-    // draw the rect
+    //рисуем кнопку
     setRect(0,0,200,50);
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::darkCyan);
     setBrush(brush);
 
-    // draw text
+    //выводим текст кнопки
     text = new QGraphicsTextItem(name, this);
     int xPos = rect().width()/2 - text->boundingRect().width()/2;
     int yPos = rect().height()/2 - text->boundingRect().height()/2;
     text->setPos(xPos, yPos);
 
-    // allow responding to hover events
+    //разрешаем отвечать на события пр наведении курсора
     setAcceptHoverEvents(true);
 }
 
@@ -28,7 +29,7 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    // change color
+    //меняем цвет
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::cyan);
@@ -37,7 +38,7 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    // change color
+    //меняем цвет
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::darkCyan);

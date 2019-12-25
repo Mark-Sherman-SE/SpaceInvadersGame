@@ -1,5 +1,4 @@
 #include "points.h"
-//#include <QTimer>
 #include <QGraphicsScene>
 
 Points::Points(QGraphicsItem *pParent) : QGraphicsTextItem(pParent)

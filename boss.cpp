@@ -1,10 +1,10 @@
 #include "boss.h"
 #include "player.h"
-#include <QTimer>
 #include <QGraphicsScene>
 
 static bool path = true;
 
+//конструктор
 Boss::Boss(BossType bossType, QGraphicsItem *pParent) :
   Opponent()
 {
@@ -13,15 +13,9 @@ Boss::Boss(BossType bossType, QGraphicsItem *pParent) :
   pTimer = new QTimer(this);
   connect(pTimer, &QTimer::timeout, this, &Boss::onMove);
   pTimer->start(10);
-  /*if (y() == 0)
-  {
-    pTimer->stop();
-    disconnect(pTimer, &QTimer::timeout, this, &Boss::onMove);
-    connect(pTimer, &QTimer::timeout, this, &Boss::onMove);
-    pTimer->start(speed_);
-  }*/
 }
 
+//устанавливаем тип босса
 void Boss::setType(BossType bossType)
 {
   bossType_ = bossType;
@@ -35,8 +29,7 @@ void Boss::setType(BossType bossType)
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(90);
         size_ = FROST_SIZE;
-        speed_ = 200;
-        damage_ = 200;
+        speed_ = 50;
         health_ = 10000;
         points_ = 10000;
         break;
@@ -48,9 +41,8 @@ void Boss::setType(BossType bossType)
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(180);
         size_ = DOMINATOR_SIZE;
-        speed_ = 100;
+        speed_ = 30;
         health_ = 25000;
-        damage_ = 100;
         points_ = 20000;
         break;
     }
@@ -61,18 +53,19 @@ void Boss::setType(BossType bossType)
         setTransformOriginPoint(oPixmap.height() / 2, oPixmap.width() / 2);
         setRotation(180);
         size_ = SOUL_SIZE;
-        speed_ = 20;
+        speed_ = 15;
         health_ = 2000;
-        damage_ = 50;
         points_ = 5000;
         break;
     }
   }
 }
 
+//метод уменьшения здоровья
 void Boss::decreaseHealth(int damage)
 {
   health_ -= damage;
+  //если здоровье закончилось - посылаем сигнал конца игры и увеличения очков
   if (health_ <= 0)
   {
     scene()->removeItem(this);
@@ -82,14 +75,18 @@ void Boss::decreaseHealth(int damage)
   }
 }
 
+//получаем размер босса
 QSize Boss::getSize() const
 {
   return size_;
 }
 
+//метод появления босса
 void Boss::onMove()
 {
-  if (y() < 200)
+  //пока не достигли нужно точки - босс пояляется
+  //когда появился - разъединяем таймер с методом поялвения исоединяем его с методом атаки
+  if (y() < 100)
   {
     setPos(x(), y() + 1);
   }
@@ -100,55 +97,60 @@ void Boss::onMove()
     connect(pTimer, &QTimer::timeout, this, &Boss::onAttack);
     pTimer->start(speed_);
   }
- /* if (y() > 0)
-  {
-
-  }*/
 }
 
+//метод атаки
 void Boss::onAttack()
 {
- // bool k = true;
+  //выбираем направление движения так, чтобы не ушёл за границу сцены
   if (path)
   {
       setPos(x() - 2, y());
-      path = x() > -size_.width() * 0.75 ? true : false;
+      path = x() > 0 ? true : false; //-size_.width() * 0.75
   }
   else
   {
     setPos(x() + 2, y());
     path = x() < scene()->width() - size_.width() * 1.5 ? false : true;
   }
+  //в зависимости от типа врага даём ему неооходимое оружее
   switch (bossType_)
   {
     case BossType::Frost:
     {
       Weapon *bomb = new Weapon(WeaponType::Bomb, Holder::Enemy);
-      Weapon *leftBullet = new Weapon(WeaponType::Bullet, Holder::Enemy);
-      Weapon *rightBullet = new Weapon(WeaponType::Bullet, Holder::Enemy);
+      Weapon *leftLaser = new Weapon(WeaponType::Laser, Holder::Enemy);
+      Weapon *rightLaser = new Weapon(WeaponType::Laser, Holder::Enemy);
 
-      if (clock() - time_ < leftBullet->getWeaponDelay())
+      if (clock() - time_ < leftLaser->getWeaponDelay() * 5)
       {
-        delete leftBullet;
-        delete rightBullet;
+        delete leftLaser;
+        delete rightLaser;
         return;
       }
       else
       {
-        //Weapon *pBullet = new Weapon(weaponType_);
-        connect(leftBullet, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        //connect(leftBullet, &Weapon::sigDecreaseScore, this, &Boss::sigDecreaseScore);
-
-        connect(rightBullet, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        leftBullet->setPos(x() - size_.width() / 2, y() + 10);
-        scene()->addItem(leftBullet);
-        rightBullet->setPos(x() + size_.width() / 2, y() + 10);
-        scene()->addItem(rightBullet);
+        connect(leftLaser, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
+        connect(rightLaser, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
+        leftLaser->setPos(x(), y() + size_.width());
+        scene()->addItem(leftLaser);
+        rightLaser->setPos(x() + size_.height(), y() + size_.width());
+        scene()->addItem(rightLaser);
         time_ = clock();
       }
 
-      connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-      bomb->setPos(x(), y());
+      static time_t bombTime = 0;
+      if (clock() - bombTime < bomb->getWeaponDelay())
+      {
+        delete bomb;
+        return;
+      }
+      else
+      {
+        bomb->setPos(x() + size_.height() / 2, y() + size_.width());
+        scene()->addItem(bomb);
+        bombTime = clock();
+      }
       break;
     }
     case BossType::Dominator:
@@ -158,8 +160,7 @@ void Boss::onAttack()
       {
         weapons[i] = new Weapon(WeaponType::Bullet, Holder::Enemy);
       }
-      //Weapon *laser = new Weapon(WeaponType::Laser, Holder::Enemy);
-      if (clock() - time_ < weapons[0]->getWeaponDelay())
+      if (clock() - time_ < weapons[0]->getWeaponDelay() * 4)
       {
         delete weapons[0];
         delete weapons[1];
@@ -175,44 +176,36 @@ void Boss::onAttack()
            weapons[i]->setPos(x() + i * 10, y() - 10);
            scene()->addItem(weapons[i]);
         }
-        //Weapon *pBullet = new Weapon(weaponType_);
         connect(weapons[0], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        //connect(leftBullet, &Weapon::sigDecreaseScore, this, &Boss::sigDecreaseScore);
         connect(weapons[1], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         connect(weapons[2], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         connect(weapons[3], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        weapons[0]->setPos(x() + 50, y() + 10);
+        weapons[0]->setPos(x() + DOMINATOR_SIZE.width() / 6, y() + DOMINATOR_SIZE.height());
         scene()->addItem(weapons[0]);
-        weapons[1]->setPos(x() + 30, y() + 10);
+        weapons[1]->setPos(x() + DOMINATOR_SIZE.width() / 7, y() + DOMINATOR_SIZE.height());
         scene()->addItem(weapons[1]);
-        weapons[2]->setPos(x() + 10, y() + 10);
+        weapons[2]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 6, y() + DOMINATOR_SIZE.height());
         scene()->addItem(weapons[2]);
-        weapons[3]->setPos(x() - 10, y() + 10);
+        weapons[3]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 7, y() + DOMINATOR_SIZE.height());
         scene()->addItem(weapons[3]);
         time_ = clock();
-
         break;
       }
     }
     case BossType::Soul:
     {
       Weapon *bomb = new Weapon(WeaponType::Bomb, Holder::Enemy);
-      //connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-      if (clock() - time_ < bomb->getWeaponDelay() * 5)
+      if (clock() - time_ < bomb->getWeaponDelay())
       {
         delete bomb;
         return;
       }
       else
       {
-       // connect(bomb, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         bomb->setPos(x() + SOUL_SIZE.width(), y() + SOUL_SIZE.height());
         scene()->addItem(bomb);
         time_ = clock();
       }
     }
   }
-
-
 }
-

@@ -5,39 +5,42 @@
 #include <QTimer>
 #include <QGraphicsScene>
 
+//конструктор
 Weapon::Weapon(WeaponType weaponType, Holder holder, QGraphicsItem *pParent) :
   QGraphicsPixmapItem(pParent)
-  /*weaponRate_(weaponRate),
-  weaponDamage_(weaponDamage)*/
 {
   holderCoefficient_ = holder == Holder::Player ? 1 : -1;
   setWeaponType(weaponType);
+  //создаём таймер, чтобы каждое заданное время (зависит от скорости стрельбы) передвигался боезапас
   QTimer *pTimer = new QTimer(this);
   connect(pTimer, &QTimer::timeout, this, &Weapon::onMove);
   pTimer->start(weaponRate_);
 }
 
+//получаем тип оружия
 WeaponType Weapon::getWeaponType() const
 {
   return weaponType_;
 }
 
+//получаем задержку оружия
 int Weapon::getWeaponDelay() const
 {
   return weaponDelay_;
 }
 
+//устанавливаем тип оружия
 void Weapon::setWeaponType(WeaponType weaponType)
 {
   weaponType_ = weaponType;
   QPixmap oPixmap(":/images/Resources/images/Weapons.png");
+  //каждый тип оружия имеет свою модель, скорость стрельбы, урон и задержку
+  //в зависимости от того, кто держит оружие, поворачиваем его в нужную стророну
   switch (weaponType_)
   {
     case WeaponType::Bullet:
     {
-      //QPixmap oPixmap(":/images/Resources/images/Weapons.png");
-      //setPixmap(oPixmap.scaled(QSize(40, 40), Qt::KeepAspectRatio));
-      QRect rect(172, 111, 11, 11); //183. 122
+      QRect rect(172, 111, 11, 11);
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
       if (holderCoefficient_ == -1)
@@ -52,8 +55,6 @@ void Weapon::setWeaponType(WeaponType weaponType)
     }
     case WeaponType::Laser:
     {
-      //QPixmap oPixmap(":/images/Resources/images/Weapons.png");
-     // setPixmap(oPixmap.scaled(QSize(40, 40), Qt::KeepAspectRatio));
       QRect rect(362, 8, 14, 22);
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
@@ -63,15 +64,13 @@ void Weapon::setWeaponType(WeaponType weaponType)
         setRotation(180);
       }
       weaponRate_ = 10;
-      weaponDamage_ = 10;
-      weaponDelay_ = 120;
+      weaponDamage_ = 75;
+      weaponDelay_ = 200;
       break;
     }
     case WeaponType::Bomb:
     {
-      //QPixmap oPixmap(":/images/Resources/images/Weapons.png");
-     // setPixmap(oPixmap.scaled(QSize(40, 40), Qt::KeepAspectRatio));
-      QRect rect(201, 196, 11, 25); //212, 210
+      QRect rect(201, 196, 11, 25);
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
       if (holderCoefficient_ == -1)
@@ -79,14 +78,14 @@ void Weapon::setWeaponType(WeaponType weaponType)
         setTransformOriginPoint(newPixmap.height() / 2, newPixmap.width() / 2);
         setRotation(180);
       }
-      weaponRate_ = 20;
-      weaponDamage_ = 20;
-      weaponDelay_ = 200;
+      weaponRate_ = 25;
+      weaponDamage_ = 150;
+      weaponDelay_ = 400;
       break;
     }
     default:
     {
-      QRect rect(172, 111, 11, 11); //183. 122
+      QRect rect(172, 111, 11, 11);
       QPixmap newPixmap = oPixmap.copy(rect);
       setPixmap(newPixmap);
       if (holderCoefficient_ == -1)
@@ -102,16 +101,20 @@ void Weapon::setWeaponType(WeaponType weaponType)
   }
 }
 
+//метод передвижения оружия
 void Weapon::onMove()
 {
   if (scene() != nullptr)
   {
+    //в зависимости от владельца оружия (босс или игрок) боезапас будет двигаться в нужную сторону
     setPos(x(), y() - 2 * holderCoefficient_);
+    //если боезапас ушёл за границу сцены - удаляем его
     if (pos().y() < 0 || pos().y() > scene()->height())
     {
       scene()->removeItem(this);
       delete this;
     }
+    //если владелец игрок - проверяем, попали ли мы по врагу
     else if (holderCoefficient_ == 1)
     {
       QList<QGraphicsItem *> lstCollidingItem = collidingItems();
@@ -120,29 +123,14 @@ void Weapon::onMove()
         Opponent *enemy = dynamic_cast<Opponent *>(pItem);
         if (enemy != nullptr)
         {
-          /*if (enemy->getColor() == getColor())
-          {
-            scene()->removeItem(enemy);
-            scene()->removeItem(this);
-
-            emit sigIncreaseScore();
-            delete enemy;
-            delete this;
-          }
-          else
-          {
-            emit sigDecreaseScore();
-            scene()->removeItem(this);
-            delete this;
-          }*/
           scene()->removeItem(this);
           enemy->decreaseHealth(weaponDamage_);
-          //scene()->removeItem(this);
           delete this;
           return;
         }
       }
     }
+    //если владелец -
     else
     {
       QList<QGraphicsItem *> lstCollidingItem = collidingItems();
@@ -151,10 +139,17 @@ void Weapon::onMove()
         Player *player = dynamic_cast<Player *>(pItem);
         if (player != nullptr)
         {
-          player->decreaseHealth(weaponDamage_);
-          scene()->removeItem(this);
-          delete this;
-          return;
+          if (player->getHealth() < weaponDamage_)
+          {
+            player->decreaseHealth(weaponDamage_);
+          }
+          else
+          {
+            player->decreaseHealth(weaponDamage_);
+            scene()->removeItem(this);
+            delete this;
+            return;
+          }
         }
       }
     }

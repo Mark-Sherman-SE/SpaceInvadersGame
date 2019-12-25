@@ -1,9 +1,9 @@
 #include "enemy.h"
 #include "player.h"
 
-//#include <QTimer>
 #include <QGraphicsScene>
 
+//конструктор
 Enemy::Enemy(EnemyType enemyType, QGraphicsItem *pParent) :
   Opponent()
 {
@@ -14,49 +14,18 @@ Enemy::Enemy(EnemyType enemyType, QGraphicsItem *pParent) :
   pTimer->start(enemySpeed_);
 }
 
-/*Enemy::Enemy(const Enemy &copiedEnemy) :
-  QObject(),
-  QGraphicsPixmapItem(nullptr)
-{
-  Enemy(copiedEnemy.enemyType_);
-}*/
-
-/*Enemy::~Enemy()
-{
-  if (scene()->isActive())
-  {
-    disconnect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
-    delete pTimer;
-    enemySpeed_ = 0;
-    enemyHealth_ = 0;
-    points_ = 0;
-  }
-}*/
-
-/*Enemy &Enemy::operator =(const Enemy &copiedEnemy)
-{
-  if (this != &copiedEnemy)
-  {
-    setType(copiedEnemy.enemyType_);
-    pTimer->stop();
-    disconnect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
-    delete pTimer;
-    pTimer = new QTimer(this);
-    connect(pTimer, &QTimer::timeout, this, &Enemy::onMove);
-    pTimer->start(enemySpeed_);
-  }
-  return *this;
-}*/
-
+//получаем тип врага
 EnemyType Enemy::getType() const
 {
   return enemyType_;
 }
 
+//установка типа врага
 void Enemy::setType(EnemyType enemyType)
 {
   enemyType_ = enemyType;
 
+  //для каждого типа варага предусмотрена своя модель, размер, скорость, здоровье и очки
   switch (enemyType_)
   {
     case EnemyType::Corporal:
@@ -122,9 +91,11 @@ void Enemy::setType(EnemyType enemyType)
   }
 }
 
+//метод уменьшения здоровья врага
 void Enemy::decreaseHealth(int damage)
 {
   enemyHealth_ -= damage;
+  //когда здоровье закончилось - увеличиваем счёт и удаляем врага
   if (enemyHealth_ <= 0)
   {
     scene()->removeItem(this);
@@ -133,16 +104,19 @@ void Enemy::decreaseHealth(int damage)
   }
 }
 
+//получаем размер врага
 QSize Enemy::getSize() const
 {
   return size_;
 }
 
+//метод передвижения врага
 void Enemy::onMove()
 {
   if (scene() != nullptr)
   {
     this->setPos(x(), y() + 2);
+    //если враг успел пробраться за игрока - уменьшаем здоровье базы
     if (this->pos().y() >= (scene()->height() - gPlayerSize.height()))
     {
       scene()->removeItem(this);
@@ -151,6 +125,7 @@ void Enemy::onMove()
     }
     else
     {
+      //если игрок пересёкся с врагом - посылаем сигнал конца игры
       QList<QGraphicsItem *> lstCollidingItem = collidingItems();
       if (!lstCollidingItem.empty())
       {
