@@ -3,7 +3,6 @@
 
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
-//#include <QSize>
 #include <QTimer>
 
 #include "opponent.h"
@@ -26,18 +25,12 @@ class Enemy :  public Opponent
 {
   Q_OBJECT
 public:
-  //конструктор, принимающий тип врага и указатель на QGraphicsItem
-  //(по умолчанию nullptr, при дальнейшем улучшении кода можно будет передавать необходимый указатель
   Enemy(EnemyType enemyType, QGraphicsItem *pParent = nullptr);
 
-  //метод, возвращающий тип врага
   EnemyType getType() const;
-  //метод установки типа врага
   void setType(EnemyType enemyType);
-  //метод уменьшения здоровья врага
   void decreaseHealth(int damage) override;
 
-  //метод, возвращающий размер врага
   QSize getSize() const override;
 
 signals:
@@ -51,17 +44,11 @@ public slots:
   void onMove() override;
 
 private:
-  //тип врага
   EnemyType enemyType_;
-  //таймер для вычисления момента передвижения врага
   QTimer *pTimer;
-  //размер врага
   QSize size_;
-  //скорость врага
   int enemySpeed_;
-  //здоровье врага
   int enemyHealth_;
-  //очки за уничтожение врага
   int points_;
 };
 

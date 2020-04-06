@@ -49,7 +49,7 @@ void Game::Run()
   connect(m_pPlayer, &Player::sigDecreaseScore, this, &Game::onDecreaseScore);
 
   //задаём количество врагов от 20 до 39
-  std::size_t amountOfEnemies = 1;//20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
+  std::size_t amountOfEnemies = 20 + rand() % VARIABLE_AMOUNT_OF_ENEMIES;
   Opponent *pEnemy = nullptr;
   int nType;
   int nPos;
@@ -125,7 +125,6 @@ void Game::keyPressEvent(QKeyEvent *event)
   }
 }
 
-//метод создания врагов
 void Game::onCreateEnemy()
 {
   //добавляем врага на сцену и соединаем все сигналы
@@ -257,7 +256,6 @@ void Game::displayGameOverMenu()
   scene()->addItem(quitButton);
 }
 
-//метод увеличения счёта
 void Game::onIncreaseScore(int points)
 {
   scorePoints += points;
@@ -265,21 +263,18 @@ void Game::onIncreaseScore(int points)
   CheckPoints();
 }
 
-//метод уменьшения счёта
 void Game::onDecreaseScore()
 {
   m_pPoints->decreaseScore();
   CheckPoints();
 }
 
-//метод увеличения здоровья
 void Game::onDecreaseHealth()
 {
   m_pPoints->decreaseHealth();
   CheckPoints();
 }
 
-//метод конца игры
 void Game::onGameOver()
 {
   close();

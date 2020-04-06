@@ -11,19 +11,13 @@ class Points : public QGraphicsTextItem
 public:
   Points(QGraphicsItem *pParent = nullptr);
 
-  //метод увеличения очков
   void increaseScore(int points);
-  //метод уменьшения очков
   void decreaseScore();
-  //метод меньшения здоровья
   void decreaseHealth();
 
-  //получаем количество жизней
   int getHealth() const;
-  //получаем количество очков
   int getScore() const;
 
-  //метод для перезапуска счёта
   void reset();
 
 private:

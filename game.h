@@ -34,38 +34,22 @@ protected:
   void keyPressEvent(QKeyEvent *event) override;
 
 public slots:
-  //отображение главного меню
   void displayMainMenu();
-  //отображение меню конца игры
   void displayGameOverMenu();
-  //метод начала игры
   void Run();
-  //метод создания врага
   void onCreateEnemy();
-  //метод учвеличения очков
   void onIncreaseScore(int points);
-  //метод уменьшения очков
   void onDecreaseScore();
-  //метод уменьшения здоровья базы
   void onDecreaseHealth();
-  //метод конца игры
   void onGameOver();
 private:
-  //указатель на игрока
   Player *m_pPlayer = nullptr;
-  //указатель на очки
   Points *m_pPoints = nullptr;
-  //таймер игры
   QTimer *pTimer = nullptr;
-  //очки за игру
   int scorePoints;
-  //размер экрана
   QSize m_oScreenSize;
-  //вектор указателей на наших врагов
   std::vector<Opponent *> enemies_;
-  //итератор по вектору врагов
   std::vector<Opponent *>::iterator ourEnemy_;
-  //тип текущего врага
   EnemyType enemyType_;
 };
 

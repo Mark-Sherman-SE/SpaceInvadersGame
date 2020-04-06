@@ -1,11 +1,8 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-//#include "player.h"
 #include <QGraphicsPixmapItem>
-//#include <QGraphicsSimpleTextItem>
 #include <QGraphicsItem>
-//#include <QKeyEvent>
 
 //описываем возможные типы оружия
 enum class WeaponType
@@ -25,18 +22,14 @@ class Weapon :  public QObject, public QGraphicsPixmapItem
 {
   Q_OBJECT
 public:
-  //конструктор класса принимает тип оружия
   Weapon(WeaponType weaponType, Holder holder, QGraphicsItem *pParent = nullptr);
 
-  //метод, возвращающий тип оружия
   WeaponType getWeaponType() const;
-  //метод, возвращающий задержку оружия
   int getWeaponDelay() const;
-  //метод, устанавливающий тип оружия
   void setWeaponType(WeaponType weaponType);
 
 signals:
-  //сигналы для корректного выичсления счёта
+  //сигналы для корректного вычисления счёта
   void sigIncreaseScore(int);
   void sigDecreaseScore();
 
@@ -45,11 +38,8 @@ public slots:
   void onMove();
 
 private:
-  //тип оружия
   WeaponType weaponType_;
-  //скорость боеприпасов
   int weaponRate_;
-  //урон от оружия
   int weaponDamage_;
   //задержка перед следующей атакой
   int weaponDelay_;

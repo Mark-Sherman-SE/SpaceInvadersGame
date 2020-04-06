@@ -17,19 +17,16 @@ Weapon::Weapon(WeaponType weaponType, Holder holder, QGraphicsItem *pParent) :
   pTimer->start(weaponRate_);
 }
 
-//получаем тип оружия
 WeaponType Weapon::getWeaponType() const
 {
   return weaponType_;
 }
 
-//получаем задержку оружия
 int Weapon::getWeaponDelay() const
 {
   return weaponDelay_;
 }
 
-//устанавливаем тип оружия
 void Weapon::setWeaponType(WeaponType weaponType)
 {
   weaponType_ = weaponType;

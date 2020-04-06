@@ -106,14 +106,14 @@ void Boss::onAttack()
   if (path)
   {
       setPos(x() - 2, y());
-      path = x() > 0 ? true : false; //-size_.width() * 0.75
+      path = x() > 0 ? true : false;
   }
   else
   {
     setPos(x() + 2, y());
     path = x() < scene()->width() - size_.width() * 1.5 ? false : true;
   }
-  //в зависимости от типа врага даём ему неооходимое оружее
+  //в зависимости от типа врага даём ему необходимое оружее
   switch (bossType_)
   {
     case BossType::Frost:
@@ -132,9 +132,9 @@ void Boss::onAttack()
       {
         connect(leftLaser, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         connect(rightLaser, &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        leftLaser->setPos(x(), y() + size_.width());
+        leftLaser->setPos(x(), y() + size_.width() * 4 / 5);
         scene()->addItem(leftLaser);
-        rightLaser->setPos(x() + size_.height(), y() + size_.width());
+        rightLaser->setPos(x() + size_.height(), y() + size_.width() * 4 / 5);
         scene()->addItem(rightLaser);
         time_ = clock();
       }
@@ -180,13 +180,13 @@ void Boss::onAttack()
         connect(weapons[1], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         connect(weapons[2], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
         connect(weapons[3], &Weapon::sigIncreaseScore, this, &Boss::sigIncreaseScore);
-        weapons[0]->setPos(x() + DOMINATOR_SIZE.width() / 6, y() + DOMINATOR_SIZE.height());
+        weapons[0]->setPos(x() + DOMINATOR_SIZE.width() / 6, y() + DOMINATOR_SIZE.height() * 2 / 3);
         scene()->addItem(weapons[0]);
-        weapons[1]->setPos(x() + DOMINATOR_SIZE.width() / 7, y() + DOMINATOR_SIZE.height());
+        weapons[1]->setPos(x() + DOMINATOR_SIZE.width() / 7, y() + DOMINATOR_SIZE.height() * 2 / 3);
         scene()->addItem(weapons[1]);
-        weapons[2]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 6, y() + DOMINATOR_SIZE.height());
+        weapons[2]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 6, y() + DOMINATOR_SIZE.height()* 2 / 3);
         scene()->addItem(weapons[2]);
-        weapons[3]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 7, y() + DOMINATOR_SIZE.height());
+        weapons[3]->setPos(x() + DOMINATOR_SIZE.width() * 5 / 7, y() + DOMINATOR_SIZE.height() * 2 / 3);
         scene()->addItem(weapons[3]);
         time_ = clock();
         break;

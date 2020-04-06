@@ -18,7 +18,7 @@ Button::Button(QString name, QGraphicsItem *parent): QGraphicsRectItem(parent)
     int yPos = rect().height()/2 - text->boundingRect().height()/2;
     text->setPos(xPos, yPos);
 
-    //разрешаем отвечать на события пр наведении курсора
+    //разрешаем отвечать на события при наведении курсора
     setAcceptHoverEvents(true);
 }
 
@@ -29,7 +29,6 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    //меняем цвет
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::cyan);
@@ -38,7 +37,6 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    //меняем цвет
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::darkCyan);

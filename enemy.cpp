@@ -91,7 +91,6 @@ void Enemy::setType(EnemyType enemyType)
   }
 }
 
-//метод уменьшения здоровья врага
 void Enemy::decreaseHealth(int damage)
 {
   enemyHealth_ -= damage;
@@ -104,13 +103,11 @@ void Enemy::decreaseHealth(int damage)
   }
 }
 
-//получаем размер врага
 QSize Enemy::getSize() const
 {
   return size_;
 }
 
-//метод передвижения врага
 void Enemy::onMove()
 {
   if (scene() != nullptr)

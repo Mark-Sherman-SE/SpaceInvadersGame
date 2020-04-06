@@ -24,15 +24,10 @@ class Boss : public Opponent
 {
   Q_OBJECT
 public:
-  //конструктор, принимающий тип босса и указатель на QGraphicsItem
-  //(по умолчанию nullptr, при дальнейшем улучшении кода можно будет передавать необходимый указатель
   Boss(BossType bossType, QGraphicsItem *pParent = nullptr);
-  //метод установки типа босса
   void setType(BossType bossType);
-  //метод уменьшения здоровья
   void decreaseHealth(int damage) override;
 
-  //метод, возвращающий размер босса
   QSize getSize() const override;
 
 signals:
@@ -42,23 +37,16 @@ signals:
   void sigWin();
 
 public slots:
-  //метод появления
   void onMove() override;
-  //метод атаки и передвижения
   void onAttack();
 
 private:
-  //тип босса
   BossType bossType_;
   //таймер для вычисления момента передвижения босса
   QTimer *pTimer;
-  //размер босса
   QSize size_;
-  //скорость
   int speed_;
-  //здоровье
   int health_;
-  //очки
   int points_;
   //время предыдущей атаки, необходим для корректной стрельбы
   clock_t time_ = 0;

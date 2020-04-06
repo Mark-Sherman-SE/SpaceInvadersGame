@@ -22,13 +22,8 @@ public:
   //(по умолчанию nullptr, при дальнейшем улучшении кода можно будет передавать необходимый указатель
   Player(WeaponType weaponType, QGraphicsItem *pParent = nullptr);
 
-  //метод для стрельбы
   void shoot();
-
-  //метод уменьшения здоровья игрока
   void decreaseHealth(int damage);
-
-  //метод получения очков здоровья
   int getHealth() const;
 
 signals:
@@ -39,11 +34,9 @@ signals:
   void sigGameOver();
 
 private:
-  //тип оружия игрока
   WeaponType weaponType_;
   //время предыдущей атаки, необходим для корректной стрельбы
   clock_t time_ = 0;
-  //здоровье игрока
   int health_;
 };
 

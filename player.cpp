@@ -35,7 +35,7 @@ void Player::shoot()
     time_ = clock();
   }
 }
-//метод уменьшения здоровья
+
 void Player::decreaseHealth(int damage)
 {
   health_ -= damage;
@@ -48,7 +48,7 @@ void Player::decreaseHealth(int damage)
   }
 }
 
-//метод получения очков здоровья
+
 int Player::getHealth() const
 {
   return health_;
